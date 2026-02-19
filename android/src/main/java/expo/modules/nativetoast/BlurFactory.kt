@@ -120,11 +120,11 @@ object BlurFactory {
      */
     private fun getBitmapTintColor(blurStyle: BlurStyle, isDarkMode: Boolean): Int {
         return when (blurStyle) {
-            BlurStyle.LIGHT -> Color.argb(100, 255, 255, 255)
-            BlurStyle.DARK -> Color.argb(120, 0, 0, 0)
+            BlurStyle.LIGHT -> Color.argb(60, 255, 255, 255)
+            BlurStyle.DARK -> Color.argb(80, 0, 0, 0)
             BlurStyle.SYSTEM_MATERIAL -> {
-                if (isDarkMode) Color.argb(120, 0, 0, 0)
-                else Color.argb(80, 255, 255, 255)
+                if (isDarkMode) Color.argb(80, 0, 0, 0)
+                else Color.argb(50, 255, 255, 255)
             }
         }
     }

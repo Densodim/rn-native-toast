@@ -134,13 +134,13 @@ class ToastView: UIView {
     private func typeColor(for type: ToastType) -> UIColor {
         switch type {
         case .error:
-            return UIColor(red: 220/255, green: 38/255, blue: 38/255, alpha: 0.7)
+            return UIColor(red: 220/255, green: 38/255, blue: 38/255, alpha: 0.45)
         case .success:
-            return UIColor(red: 22/255, green: 163/255, blue: 74/255, alpha: 0.6)
+            return UIColor(red: 22/255, green: 163/255, blue: 74/255, alpha: 0.4)
         case .warning:
-            return UIColor(red: 234/255, green: 179/255, blue: 8/255, alpha: 0.65)
+            return UIColor(red: 234/255, green: 179/255, blue: 8/255, alpha: 0.42)
         case .info:
-            return UIColor(red: 37/255, green: 99/255, blue: 235/255, alpha: 0.6)
+            return UIColor(red: 37/255, green: 99/255, blue: 235/255, alpha: 0.4)
         }
     }
 }

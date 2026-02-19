@@ -159,10 +159,10 @@ class ToastView(context: Context) : FrameLayout(context) {
     /** Цвет оверлея по типу тоста */
     private fun getTypeColor(type: ToastType): Int {
         return when (type) {
-            ToastType.ERROR -> Color.argb(180, 220, 38, 38)     // красный
-            ToastType.SUCCESS -> Color.argb(150, 22, 163, 74)   // зелёный
-            ToastType.WARNING -> Color.argb(160, 234, 179, 8)   // жёлтый
-            ToastType.INFO -> Color.argb(150, 37, 99, 235)      // синий
+            ToastType.ERROR -> Color.argb(115, 220, 38, 38)     // красный
+            ToastType.SUCCESS -> Color.argb(100, 22, 163, 74)   // зелёный
+            ToastType.WARNING -> Color.argb(105, 234, 179, 8)   // жёлтый
+            ToastType.INFO -> Color.argb(100, 37, 99, 235)      // синий
         }
     }
 
