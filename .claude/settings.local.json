@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Home/work/modules/rn-native-toast/ios -type f \\\\\\(-name *.swift -o -name *.m -o -name *.h -o -name *.mm \\\\\\))",
+      "Bash(find /c/Home/work/modules/rn-native-toast/android -type f \\\\\\(-name *.kt -o -name *.java \\\\\\) ! -path */build/*)",
+      "Bash(find /c/Home/work/modules/rn-native-toast -type f \\\\\\(-name *.md -o -name build.gradle -o -name *.podspec \\\\\\) ! -path */build/* ! -path */.git/*)",
+      "Bash(find /c/Home/work/modules/rn-native-toast -type f ! -path */build/* ! -path */.git/* ! -path */node_modules/* ! -path */.idea/*)"
+    ]
+  }
+}

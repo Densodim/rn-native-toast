@@ -113,6 +113,13 @@ final class ToastManager {
         toastView.translatesAutoresizingMaskIntoConstraints = false
         currentToastView = toastView
 
+        let capturedView = toastView
+        toastView.onSwipeDismiss = { [weak self, weak capturedView] in
+            guard let self, let capturedView,
+                  self.currentToastView === capturedView else { return }
+            self.dismissCurrent(reason: "swipe")
+        }
+
         window.rootViewController?.view.addSubview(toastView)
 
         // Layout constraints with safe area

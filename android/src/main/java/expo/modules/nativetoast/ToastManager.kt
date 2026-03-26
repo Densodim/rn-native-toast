@@ -9,6 +9,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -167,6 +168,14 @@ class ToastManager private constructor() {
         toastView.bind(config, blurredBitmap)
         currentToastView = toastView
 
+        // Смахивание для скрытия
+        val capturedView = toastView
+        toastView.onSwipeDismiss = {
+            if (currentToastView === capturedView) {
+                dismissCurrentImmediate("swipe")
+            }
+        }
+
         // ── 6. Добавить в оверлей ──
         overlayContainer?.addView(toastView, lp)
 
@@ -274,10 +283,7 @@ class ToastManager private constructor() {
     private fun ensureOverlayContainer(activity: Activity, position: ToastPosition) {
         removeOverlay()
 
-        val container = FrameLayout(activity).apply {
-            // Не перехватываем касания вне тоста
-            setOnTouchListener { _, _ -> false }
-        }
+        val container = PassthroughFrameLayout(activity)
 
         val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
@@ -367,5 +373,26 @@ class ToastManager private constructor() {
 
     private fun dpToPx(context: Context, dp: Float): Float {
         return dp * context.resources.displayMetrics.density
+    }
+}
+
+/**
+ * FrameLayout, который пропускает касания сквозь себя, если они не попадают
+ * ни на один дочерний элемент. Это позволяет UI под оверлеем оставаться
+ * интерактивным пока тост виден.
+ */
+private class PassthroughFrameLayout(context: Context) : FrameLayout(context) {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        for (i in childCount - 1 downTo 0) {
+            val child = getChildAt(i)
+            if (child.visibility == VISIBLE) {
+                val rect = Rect()
+                child.getHitRect(rect)
+                if (rect.contains(ev.x.toInt(), ev.y.toInt())) {
+                    return super.dispatchTouchEvent(ev)
+                }
+            }
+        }
+        return false
     }
 }

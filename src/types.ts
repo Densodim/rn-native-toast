@@ -65,5 +65,5 @@ export type NativeToastConstants = {
  */
 export type NativeToastEvents = {
   onToastShow: { id: string; type: ToastType };
-  onToastHide: { id: string; type: ToastType; reason: 'timeout' | 'manual' | 'replaced' };
+  onToastHide: { id: string; type: ToastType; reason: 'timeout' | 'manual' | 'replaced' | 'swipe' };
 };

@@ -9,6 +9,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -45,6 +46,10 @@ class ToastView(context: Context) : FrameLayout(context) {
     private val horizontalPaddingPx = dpToPx(16f).toInt()
     private val verticalPaddingPx = dpToPx(16f).toInt()
     private val textSpacingPx = dpToPx(4f).toInt()
+
+    var currentPosition: ToastPosition = ToastPosition.TOP
+    private var swipeStartY = 0f
+    var onSwipeDismiss: (() -> Unit)? = null
 
     init {
         // Обрезка по скруглённым углам
@@ -110,6 +115,36 @@ class ToastView(context: Context) : FrameLayout(context) {
 
         // Поддержка RTL
         layoutDirection = View.LAYOUT_DIRECTION_LOCALE
+
+        // Смахивание для скрытия
+        setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    swipeStartY = event.rawY
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val dy = event.rawY - swipeStartY
+                    val validDrag = if (currentPosition == ToastPosition.TOP) dy < 0 else dy > 0
+                    if (validDrag) translationY = dy
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    val dy = event.rawY - swipeStartY
+                    val shouldDismiss = if (currentPosition == ToastPosition.TOP) dy < -60 else dy > 60
+                    if (shouldDismiss) {
+                        val endY = if (currentPosition == ToastPosition.TOP) -400f else 400f
+                        animate().translationY(endY).alpha(0f).setDuration(180)
+                            .withEndAction { onSwipeDismiss?.invoke() }
+                            .start()
+                    } else {
+                        animate().translationY(0f).setDuration(200).start()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     /**
@@ -119,6 +154,7 @@ class ToastView(context: Context) : FrameLayout(context) {
      * @param blurredBitmap  Размытый bitmap контента под тостом (null = фоллбэк)
      */
     fun bind(config: ToastConfigData, blurredBitmap: Bitmap? = null) {
+        currentPosition = config.position
         titleView.text = config.titleKey
         messageView.text = config.messageKey
 

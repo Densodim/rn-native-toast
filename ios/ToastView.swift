@@ -36,6 +36,10 @@ class ToastView: UIView {
 
     private var blurView: UIVisualEffectView?
 
+    private var toastPosition: ToastPosition = .top
+    private var swipeTouchStartY: CGFloat = 0
+    var onSwipeDismiss: (() -> Void)?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -107,6 +111,7 @@ class ToastView: UIView {
 
     /// Bind configuration — reusable pattern.
     func bind(config: ToastConfigData) {
+        toastPosition = config.position
         titleLabel.text = config.titleKey
         messageLabel.text = config.messageKey
         messageLabel.isHidden = config.messageKey.isEmpty
@@ -129,6 +134,39 @@ class ToastView: UIView {
 
         // Accessibility
         accessibilityLabel = "\(config.titleKey). \(config.messageKey)"
+    }
+
+    // MARK: - Swipe to dismiss
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        swipeTouchStartY = touch.location(in: superview).y
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first, superview != nil else { return }
+        let dy = touch.location(in: superview).y - swipeTouchStartY
+        let offset = toastPosition == .top ? min(0, dy) : max(0, dy)
+        transform = CGAffineTransform(translationX: 0, y: offset)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let dy = touch.location(in: superview).y - swipeTouchStartY
+        let shouldDismiss = toastPosition == .top ? dy < -50 : dy > 50
+        if shouldDismiss {
+            onSwipeDismiss?()
+        } else {
+            UIView.animate(withDuration: 0.3, delay: 0,
+                           usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5,
+                           options: .curveEaseOut) { self.transform = .identity }
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        UIView.animate(withDuration: 0.3, delay: 0,
+                       usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5,
+                       options: .curveEaseOut) { self.transform = .identity }
     }
 
     private func typeColor(for type: ToastType) -> UIColor {
