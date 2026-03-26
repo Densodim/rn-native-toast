@@ -1,6 +1,6 @@
 {
   "name": "react-native-blur-toast",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Enterprise-grade native toast/alert module for React Native. Real blur (UIVisualEffectView on iOS, RenderEffect on Android), 60fps animations, queue/replace modes, haptic feedback, accessibility, RTL, dark mode. Expo Modules API with New Architecture support.",
   "main": "src/index.ts",
   "types": "src/index.ts",
