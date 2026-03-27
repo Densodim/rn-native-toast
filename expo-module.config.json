@@ -4,6 +4,7 @@
     "modules": ["expo.modules.nativetoast.NativeToastModule"]
   },
   "ios": {
-    "modules": ["NativeToastModule"]
+    "modules": ["NativeToastModule"],
+    "podspecPath": "ReactNativeBlurToast.podspec"
   }
 }
