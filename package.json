@@ -28,7 +28,8 @@
     "android/src/",
     "android/build.gradle",
     "ios/",
-    "expo-module.config.json"
+    "expo-module.config.json",
+    "*.podspec"
   ],
   "scripts": {
     "prepublishOnly": "echo 'Ready to publish'"
